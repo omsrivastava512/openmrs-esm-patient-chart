@@ -158,7 +158,7 @@ const VitalsHeader: React.FC<VitalsHeaderProps> = ({
                 </ToggletipButton>
                 <ToggletipContent className={styles.referenceRangeContent}>
                   <p className={styles.referenceRangeHeading}>{t('normalRanges', 'Normal ranges')}</p>
-                  <dl className={styles.referenceRangeTable}>
+                  <dl className={styles.referenceRangeEntries}>
                     {sysRange && diaRange && (
                       <div className={styles.referenceRangeRow}>
                         <dt className={styles.referenceRangeLabel}>{t('bloodPressureAbbreviated', 'BP')}</dt>
