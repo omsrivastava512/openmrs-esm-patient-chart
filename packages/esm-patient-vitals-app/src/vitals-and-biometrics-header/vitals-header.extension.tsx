@@ -121,7 +121,7 @@ const VitalsHeader: React.FC<VitalsHeaderProps> = ({
           ? `≥ ${range.lowNormal}`
           : range.hiNormal != null
             ? `≤ ${range.hiNormal}`
-            : '-';
+            : '––';
 
     const sysRange = conceptRangeMap?.get(config.concepts.systolicBloodPressureUuid);
     const diaRange = conceptRangeMap?.get(config.concepts.diastolicBloodPressureUuid);
@@ -158,13 +158,13 @@ const VitalsHeader: React.FC<VitalsHeaderProps> = ({
                 </ToggletipButton>
                 <ToggletipContent className={styles.referenceRangeContent}>
                   <p className={styles.referenceRangeHeading}>{t('normalRanges', 'Normal ranges')}</p>
-                  <div className={styles.referenceRangeTable}>
+                  <dl className={styles.referenceRangeTable}>
                     {sysRange && diaRange && (
                       <div className={styles.referenceRangeRow}>
-                        <span className={styles.referenceRangeLabel}>{t('bloodPressureAbbreviated', 'BP')}</span>
-                        <span className={styles.referenceRangeValue}>
+                        <dt className={styles.referenceRangeLabel}>{t('bloodPressureAbbreviated', 'BP')}</dt>
+                        <dd className={styles.referenceRangeValue}>
                           {`${formatRange(sysRange)} / ${formatRange(diaRange)} ${bpUnit ?? ''}`}
-                        </span>
+                        </dd>
                       </div>
                     )}
                     {[
@@ -194,14 +194,14 @@ const VitalsHeader: React.FC<VitalsHeaderProps> = ({
                         const rangeValue = formatRange(conceptRangeMap.get(uuid));
                         return (
                           <div key={uuid} className={styles.referenceRangeRow}>
-                            <span className={styles.referenceRangeLabel}>{label}</span>
-                            <span className={styles.referenceRangeValue}>
+                            <dt className={styles.referenceRangeLabel}>{label}</dt>
+                            <dd className={styles.referenceRangeValue}>
                               {unit ? `${rangeValue} ${unit}` : rangeValue}
-                            </span>
+                            </dd>
                           </div>
                         );
                       })}
-                  </div>
+                  </dl>
                 </ToggletipContent>
               </Toggletip>
             )}
