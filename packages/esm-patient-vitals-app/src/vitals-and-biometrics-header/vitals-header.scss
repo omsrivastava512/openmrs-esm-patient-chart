@@ -129,8 +129,15 @@
   color: $interactive-01;
 }
 
+// HACK: Targets Carbon's inner toggletip wrapper which has a hardcoded max-inline-size: 18rem.
+// className on ToggletipContent lands on the outer element, so we need :global() here
+// to reach the inner shell. cds--toggletip-content is stable within a Carbon major version.
 .referenceRangeToggletip {
   align-self: center;
+
+  :global(.cds--toggletip-content) {
+    max-inline-size: 24rem;
+  }
 }
 
 .referenceRangeButton {
