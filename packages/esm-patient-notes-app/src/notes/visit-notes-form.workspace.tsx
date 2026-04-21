@@ -551,22 +551,22 @@ const VisitNotesForm: React.FC<PatientWorkspace2DefinitionProps<VisitNotesFormPr
               </Row>
             )}
             <div className={styles.diagnosesText}>
-              {selectedPrimaryDiagnoses.map((diagnosis, index) => (
+              {selectedPrimaryDiagnoses.map((diagnosis) => (
                 <Tag
                   className={styles.tag}
                   filter
-                  key={index}
+                  key={diagnosis.diagnosis.coded}
                   onClose={() => handleRemoveDiagnosis(diagnosis, 'primaryInputSearch')}
                   type="red"
                 >
                   {diagnosis.display}
                 </Tag>
               ))}
-              {selectedSecondaryDiagnoses.map((diagnosis, index) => (
+              {selectedSecondaryDiagnoses.map((diagnosis) => (
                 <Tag
                   className={styles.tag}
                   filter
-                  key={index}
+                  key={diagnosis.diagnosis.coded}
                   onClose={() => handleRemoveDiagnosis(diagnosis, 'secondaryInputSearch')}
                   type="blue"
                 >
