@@ -121,7 +121,7 @@ const VitalsHeader: React.FC<VitalsHeaderProps> = ({
           ? `≥ ${range.lowNormal}`
           : range.hiNormal != null
             ? `≤ ${range.hiNormal}`
-            : '––';
+            : '-';
 
     const sysRange = conceptRangeMap?.get(config.concepts.systolicBloodPressureUuid);
     const diaRange = conceptRangeMap?.get(config.concepts.diastolicBloodPressureUuid);
