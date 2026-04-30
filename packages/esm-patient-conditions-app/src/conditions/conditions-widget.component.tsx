@@ -1,4 +1,4 @@
-import React, { type Dispatch, useCallback, useEffect, useRef, useState } from 'react';
+import React, { type Dispatch, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import classNames from 'classnames';
@@ -8,6 +8,7 @@ import {
   FormGroup,
   FormLabel,
   InlineLoading,
+  InlineNotification,
   Layer,
   RadioButton,
   RadioButtonGroup,
@@ -76,7 +77,7 @@ const ConditionsWidget: React.FC<ConditionsWidgetProps> = ({
     setValue,
   } = useFormContext<ConditionsFormSchema>();
   const session = useSession();
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const clinicalStatus = watch('clinicalStatus');
   const matchingCondition = conditions?.find((condition) => condition?.id === conditionToEdit?.id);
 
@@ -87,6 +88,20 @@ const ConditionsWidget: React.FC<ConditionsWidgetProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
   const { searchResults, isSearching } = useConditionsSearch(debouncedSearchTerm);
+
+  const duplicateCondition = useMemo(() => {
+    if (!selectedCondition || !conditions?.length) {
+      return null;
+    }
+    const uuid = selectedCondition.uuid;
+    return (
+      conditions.find((c) => c.conceptId === uuid && c.clinicalStatus.toLowerCase() === 'active') ??
+      conditions.find((c) => c.conceptId === uuid) ??
+      null
+    );
+  }, [selectedCondition, conditions]);
+
+  const isActiveDuplicate = duplicateCondition?.clinicalStatus.toLowerCase() === 'active';
 
   const handleConditionChange = useCallback(
     (selectedCondition: CodedCondition) => {
@@ -249,14 +264,7 @@ const ConditionsWidget: React.FC<ConditionsWidgetProps> = ({
                       placeholder={t('searchConditions', 'Search conditions')}
                       ref={searchInputRef}
                       renderIcon={errors?.conditionUuid && ((props) => <WarningFilled fill="red" {...props} />)}
-                      value={(() => {
-                        if (selectedCondition) {
-                          return selectedCondition.display;
-                        }
-                        if (debouncedSearchTerm) {
-                          return value;
-                        }
-                      })()}
+                      value={selectedCondition?.display ?? value ?? ''}
                     />
                   </ResponsiveWrapper>
                 )}
@@ -274,6 +282,28 @@ const ConditionsWidget: React.FC<ConditionsWidgetProps> = ({
                 t={t}
                 value={searchTerm}
               />
+              {selectedCondition && duplicateCondition && (
+                <InlineNotification
+                  hideCloseButton
+                  kind="warning"
+                  lowContrast
+                  className={styles.duplicateWarning}
+                  title={t('possibleDuplicate', 'Possible duplicate')}
+                  subtitle={
+                    isActiveDuplicate
+                      ? t(
+                          'duplicateActiveConditionSubtitle',
+                          "{{conditionName}} is already on this patient's active problem list. Saving will create a duplicate.",
+                          { conditionName: selectedCondition.display },
+                        )
+                      : t(
+                          'duplicateInactiveConditionSubtitle',
+                          '{{conditionName}} was previously recorded and is now inactive. Consider reactivating the existing record instead of creating a new one.',
+                          { conditionName: selectedCondition.display },
+                        )
+                  }
+                />
+              )}
             </>
           )}
         </FormGroup>
